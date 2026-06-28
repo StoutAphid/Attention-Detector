@@ -1,34 +1,36 @@
 """
-gaze.py — Gaze direction tracking
-Detects iris position relative to eye bounding boxes.
-Returns a 0-100 attention sub-score.
+this module detects the iris position relative to eye bounding boxes, hence tracking eye position.
+returns a 0-100 attention sub-score.
+it is the first process of the pipeline.
 """
 
 import cv2
 import numpy as np
 import mediapipe as mp
 
+
+# creates a facemesh detector which tracks the iris position (refine_landmarks = True increases the face mesh to include iris, eyes and lips) for one face. 
 mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh(
     max_num_faces=1,
-    refine_landmarks=True,  # required for iris landmarks
+    refine_landmarks=True,
     min_detection_confidence=0.5,
     min_tracking_confidence=0.5,
 )
-
+# these points are fixed by mediapipe face mesh. these point represent the bounding box for each eye and the iris itself.
 LEFT_EYE = [362, 382, 381, 380, 374, 373, 390, 249, 263, 466, 388, 387, 386, 385, 384, 398]
 RIGHT_EYE = [33, 7, 163, 144, 145, 153, 154, 155, 133, 173, 157, 158, 159, 160, 161, 246]
 LEFT_IRIS = [474, 475, 476, 477]
 RIGHT_IRIS = [469, 470, 471, 472]
-
+# rolling buffer to smooth inputs
 _history = []
 HISTORY_LEN = 10
 
-
+# converts landmark ratio into pixel coordinates using w
 def _points(landmarks, idxs, w, h):
     return np.array([(landmarks[i].x * w, landmarks[i].y * h) for i in idxs], dtype=np.float32)
 
-
+# 
 def _bbox_from_points(pts, pad=4, w=None, h=None):
     x1, y1 = pts[:, 0].min() - pad, pts[:, 1].min() - pad
     x2, y2 = pts[:, 0].max() + pad, pts[:, 1].max() + pad
@@ -44,7 +46,7 @@ def _draw_box_label(frame, box, label, color):
     text_y = max(18, y1 - 8)
     cv2.putText(frame, label, (x1, text_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-
+# detects center of iris and position relative to eyebox
 def _iris_ratio(landmarks, iris_idx, eye_idx, w, h):
     iris_pts = _points(landmarks, iris_idx, w, h)
     eye_pts = _points(landmarks, eye_idx, w, h)
@@ -55,7 +57,7 @@ def _iris_ratio(landmarks, iris_idx, eye_idx, w, h):
     ry = (cy - y_min) / (y_max - y_min + 1e-6)
     return float(rx), float(ry)
 
-
+# classifies where the iris is looking based on its ratio relative to eyebox. 
 def _classify(rx, ry):
     if rx < 0.38:
         return "LEFT"
@@ -67,11 +69,12 @@ def _classify(rx, ry):
         return "DOWN"
     return "CENTER"
 
-
+# scores represent focus. 100 being best and 0 best worst. looking up and straight is decent, 
+# looking left and right have slight penalization but looking down has the worst as it could mean the user is dozing or looking at their phone.
 def _score(direction):
-    return {"CENTER": 100, "UP": 70, "DOWN": 40, "LEFT": 30, "RIGHT": 30}.get(direction, 50)
+    return {"CENTER": 100, "UP": 70, "DOWN": 20, "LEFT": 30, "RIGHT": 30}.get(direction, 50)
 
-
+# final gaze score function for a single recorded frame
 def get_score(frame):
     """
     Args:   BGR frame

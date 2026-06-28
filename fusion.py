@@ -53,7 +53,7 @@ def _penalty_from_details(scores, details):
         penalty += 10
 
     if bool(blink_info.get("eye_closed", False)):
-        penalty += 18
+        penalty += 40
 
     if float(blink_info.get("mar", 0) or 0) > 0.60:
         penalty += 10

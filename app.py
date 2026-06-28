@@ -30,9 +30,7 @@ import head_pose
 import posture
 
 
-# -----------------------------
-# Page config
-# -----------------------------
+# page config
 st.set_page_config(
     page_title="Attention Detector",
     page_icon="E",
@@ -42,9 +40,7 @@ st.set_page_config(
 st.title("Attention Detector")
 
 
-# -----------------------------
-# Session state
-# -----------------------------
+# session state
 def _init_state():
     defaults = {
         "last_posture": (50, None, {"distraction_count": 0, "distractions": []}),
@@ -86,9 +82,7 @@ def _fuse_pretrained(scores, details):
         return fusion.fuse(scores)
 
 
-# -----------------------------
-# Sidebar
-# -----------------------------
+# sidebar
 with st.sidebar:
     st.header("Settings")
 
@@ -107,7 +101,7 @@ with st.sidebar:
     st.divider()
     st.subheader("Processing")
 
-    # Vision modules are always enabled.
+    # enables all vision score modules
     show_gaze = True
     show_pose = True
     show_blink = True
@@ -227,9 +221,7 @@ Then click **Train custom model**.
         st.success("Session reset.")
 
 
-# -----------------------------
-# Main layout
-# -----------------------------
+# layout
 col1, col2 = st.columns([2.4, 1])
 
 with col1:
@@ -246,10 +238,7 @@ with col2:
     model_placeholder = st.empty()
     collect_placeholder = st.empty()
 
-
-# -----------------------------
-# Core pipeline
-# -----------------------------
+# pipeline
 def _run_pipeline(
     frame,
     frame_count=1,
@@ -478,9 +467,8 @@ def _update_dashboard(
         )
 
 
-# -----------------------------
+
 # Uploaded video processing
-# -----------------------------
 def _process_uploaded_video(
     uploaded_file,
     frame_stride,
@@ -627,9 +615,7 @@ def _process_uploaded_video(
         )
 
 
-# -----------------------------
 # Input modes
-# -----------------------------
 if input_mode == "Upload video":
     uploaded = st.file_uploader(
         "Upload a video",
