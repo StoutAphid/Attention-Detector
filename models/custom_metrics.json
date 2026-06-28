@@ -1,9 +1,9 @@
 {
-  "accuracy": 0.927,
-  "total_samples": 712,
+  "accuracy": 0.86,
+  "total_samples": 856,
   "label_counts": {
-    "distracted": 335,
-    "focused": 360,
+    "distracted": 407,
+    "focused": 432,
     "moderate": 17
   },
   "features": [
@@ -20,6 +20,6 @@
     "posture_score",
     "distraction_count"
   ],
-  "trained_at": 1782667895,
-  "classification_report": "              precision    recall  f1-score   support\n\n  distracted       0.94      0.92      0.93        84\n     focused       0.91      0.96      0.93        90\n    moderate       1.00      0.50      0.67         4\n\n    accuracy                           0.93       178\n   macro avg       0.95      0.79      0.84       178\nweighted avg       0.93      0.93      0.93       178\n"
+  "trained_at": 1782669431,
+  "classification_report": "              precision    recall  f1-score   support\n\n  distracted       0.91      0.81      0.86       102\n     focused       0.82      0.93      0.87       108\n    moderate       1.00      0.25      0.40         4\n\n    accuracy                           0.86       214\n   macro avg       0.91      0.66      0.71       214\nweighted avg       0.87      0.86      0.86       214\n"
 }
