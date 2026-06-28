@@ -1,0 +1,24 @@
+{
+  "accuracy": 0.944,
+  "total_samples": 576,
+  "label_counts": {
+    "distracted": 289,
+    "focused": 287
+  },
+  "features": [
+    "gaze_score",
+    "gaze_off_center",
+    "head_score",
+    "abs_pitch",
+    "abs_yaw",
+    "abs_roll",
+    "blink_score",
+    "ear",
+    "mar",
+    "bpm",
+    "posture_score",
+    "distraction_count"
+  ],
+  "trained_at": 1782648055,
+  "classification_report": "              precision    recall  f1-score   support\n\n  distracted       0.93      0.96      0.95        72\n     focused       0.96      0.93      0.94        72\n\n    accuracy                           0.94       144\n   macro avg       0.94      0.94      0.94       144\nweighted avg       0.94      0.94      0.94       144\n"
+}
